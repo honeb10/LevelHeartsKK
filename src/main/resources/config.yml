@@ -1,0 +1,7 @@
+permittedHealthValues:
+- 200
+- 500
+- 800
+- 1000
+max: 1000
+scalingThreshold: 200

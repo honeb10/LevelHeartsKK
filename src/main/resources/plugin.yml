@@ -1,0 +1,14 @@
+name: LevelHeartsKK
+version: ${project.version}
+main: honeb1.levelheartskk.LevelHeartsKK
+api-version: 1.16
+
+permissions:
+  levelheartskk.check:
+    default: true
+  levelheartskk.modify:
+    default: op
+
+commands:
+  health:
+    permission: levelheartskk.check
