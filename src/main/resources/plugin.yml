@@ -8,7 +8,8 @@ permissions:
     default: true
   levelheartskk.modify:
     default: op
+  levelheartskk.reload:
+    default: op
 
 commands:
   health:
-    permission: levelheartskk.check

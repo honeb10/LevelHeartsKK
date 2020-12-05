@@ -5,3 +5,5 @@ permittedHealthValues:
 - 1000
 max: 1000
 scalingThreshold: 200
+baseLevel: 30
+levelPerHeart: 10
