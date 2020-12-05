@@ -31,6 +31,7 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
     //levelheartsKK.maxhealth.n -> 体力nまで増加可能
 
     Map<String,Double> healthOnLogout = new HashMap<>();
+    Map<String,Double> maxHealthOnLogout = new HashMap<>();
     public final int BASE_HEALTH =  20;
     
 
@@ -81,16 +82,17 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
         //ログアウト時の体力を記録
         Player p = event.getPlayer();
         healthOnLogout.put(p.getName(),p.getHealth());
+        maxHealthOnLogout.put(p.getName(),Utilities.getBaseMaxHealth(p));
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         //ログアウト時の体力を復元
         Player p = event.getPlayer();
+        Double maxHealth = maxHealthOnLogout.get(p.getName());
         Double health = healthOnLogout.get(p.getName());
-        if(health != null){
-            p.setHealth(health);
-        }
+        if(maxHealth != null) Utilities.setMaxHealth(p,maxHealth);
+        if(health != null) p.setHealth(health);
         //コンパクト化
         rescale(p);
     }

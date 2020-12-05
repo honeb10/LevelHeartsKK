@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Utilities {
-    public static void setMaxHealth(Player p, int health){
+    public static void setMaxHealth(Player p, double health){
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
     }
 
