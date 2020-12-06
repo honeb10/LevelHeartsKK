@@ -13,3 +13,4 @@ permissions:
 
 commands:
   health:
+    default: true

@@ -4,7 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +24,8 @@ import  honeb1.levelheartskk.Utilities;
 import org.w3c.dom.Attr;
 import sun.nio.ch.Util;
 
-import javax.security.auth.login.Configuration;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +36,8 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
 
     Map<String,Double> healthOnLogout = new HashMap<>();
     Map<String,Double> maxHealthOnLogout = new HashMap<>();
+    FileConfiguration personalThreshold;
+    File thresholdFile;
     public final int BASE_HEALTH =  20;
     
 
@@ -41,12 +47,32 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         FileConfiguration fileConfiguration = getConfig();
         configuration = new LHConfiguration(this);
+        thresholdFile = new File("plugins/LevelHeartsKK/personalThreshold.yml");
+        if(!thresholdFile.exists()){
+            try{
+                thresholdFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        personalThreshold = new YamlConfiguration();
+        try {
+            personalThreshold.load(thresholdFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-
+        try {
+            personalThreshold.save(thresholdFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -137,6 +163,23 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
                 rescale(target);
                 sender.sendMessage(target.getName() + "の最大体力を" + healthToSet + "に設定しました。");
             }
+        }else if(args.length == 2 && args[0].equalsIgnoreCase("scale")){
+            if(Utilities.checkAndNoticePermission(sender,"levelheartskk.check"))
+            if(!(sender instanceof Player)){
+                sender.sendMessage("ゲーム内でのみ使用可能です。");
+                return false;
+            }
+            Player p = (Player)sender;
+            int threshold;
+            try {
+                 threshold = Integer.valueOf(args[1]);
+            }catch (NumberFormatException e){
+                sender.sendMessage("有効な数字を入力してください。");
+                return false;
+            }
+            personalThreshold.set(p.getName(),threshold);
+            rescale(p);
+            p.sendMessage("あなたの最大体力が"+threshold+"を超えた場合に割合で表示されるようになります。");
         }
         return false;
     }
@@ -155,11 +198,13 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
 
     public void rescale(Player p){
         double maxHealth = Utilities.getMaxHealth(p);
-        if(maxHealth < configuration.scalingThreshold){
+        int threshold = personalThreshold.getInt(p.getName().toString());
+        if(threshold == 0) threshold = configuration.scalingThreshold;
+        if(maxHealth < threshold){
             p.setHealthScaled(false);
         }else{
             p.setHealthScaled(true);
-            p.setHealthScale(configuration.scalingThreshold);
+            p.setHealthScale(threshold);
         }
     }
 }
