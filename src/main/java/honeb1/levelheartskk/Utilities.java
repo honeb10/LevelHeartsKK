@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 public class Utilities {
     public static void setMaxHealth(Player p, double health){
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
+        if(getMaxHealth(p)<p.getHealth()) p.setHealth(health);
     }
 
     public static double getBaseMaxHealth(Player p){

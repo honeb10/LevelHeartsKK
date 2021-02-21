@@ -7,3 +7,4 @@ max: 1000
 scalingThreshold: 200
 baseLevel: 30
 levelPerHeart: 10
+scalingDelayAfterJoining: 40

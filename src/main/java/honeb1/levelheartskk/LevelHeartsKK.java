@@ -21,6 +21,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import  honeb1.levelheartskk.Utilities;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.w3c.dom.Attr;
 import sun.nio.ch.Util;
 
@@ -120,7 +121,13 @@ public final class LevelHeartsKK extends JavaPlugin implements Listener {
         if(maxHealth != null) Utilities.setMaxHealth(p,maxHealth);
         if(health != null) p.setHealth(health);
         //コンパクト化
-        rescale(p);
+        BukkitRunnable rescalingRunnable = new BukkitRunnable(){
+            @Override
+            public void run() {
+                rescale(p);
+            }
+        };
+        rescalingRunnable.runTaskLater(this,configuration.scalingDelay);
     }
 
     @Override

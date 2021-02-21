@@ -14,6 +14,7 @@ public class LHConfiguration {
     int baseLevel;
     int levelPerHeart;
     int baseHealth;
+    int scalingDelay;
     public LHConfiguration(JavaPlugin plugin){
         pl = plugin;
         loadConfig();
@@ -26,5 +27,6 @@ public class LHConfiguration {
         baseLevel = fileConfiguration.getInt("baseLevel");
         levelPerHeart = fileConfiguration.getInt("levelPerHeart");
         healthPermList = (ArrayList<Integer>) fileConfiguration.getList("permittedHealthValues");
+        scalingDelay = fileConfiguration.getInt("scalingDelayAfterJoining");
     }
 }
